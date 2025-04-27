@@ -1,35 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import {FC, useState} from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: FC = () => {
+  const [amount, setAmount] = useState(1);
+  const [rate, setRate] = useState(6.5);
+  const [results, setResults] = useState<{ period: number; label: string; value: number }[] | null>(null);
+
+  const calculateInterest = () => {
+    const periods = [
+      { period: 365, label: "per day" },
+      { period: 12, label: "per month" },
+      { period: 3, label: "per every 3 month" },
+      { period: 1, label: "per year" },
+    ];
+
+    const calculated = periods.map(({ period, label }) => {
+      const value = Math.floor((amount * 100000 * (rate / 100)) / period);
+      return {
+        period,
+        label,
+        value,
+      };
+    });
+
+    setResults(calculated);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg">
+        <h1 className="text-2xl font-bold mb-4 text-center">Interest Calculator</h1>
+        <div className="mb-4">
+          <label className="block mb-1 font-semibold">Amount in Lakh (Enter 1 for 100,000 MMK)</label>
+          <input
+            type="number"
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            min={1}
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block mb-1 font-semibold">Interest Rate (%)</label>
+          <select
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={rate}
+            onChange={(e) => setRate(Number(e.target.value))}
+          >
+            {[...Array(13)].map((_, i) => {
+              const val = 6 + i * 0.5;
+              return (
+                <option key={val} value={val}>
+                  {val.toFixed(1)}%
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        <button
+          onClick={calculateInterest}
+          className="w-full text-white py-2 rounded-lg bg-blue-500 hover:bg-blue-700 transition"
+        >
+          Calculate
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+        {results && (
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-2">Results:</h2>
+            <ul className="space-y-2">
+              {results.map(({period, label, value}) => (
+                <li key={period} className="bg-gray-50 p-3 rounded-lg shadow-sm text-left">
+                  <strong>{value.toLocaleString("en-US", { minimumFractionDigits: 0 })} MMK</strong> {label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
