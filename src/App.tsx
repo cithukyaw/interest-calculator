@@ -27,9 +27,9 @@ const App: FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-lg">
-        <h1 className="text-2xl font-bold mb-4 text-center">Interest Calculator</h1>
+    <div className="container mx-auto min-h-screen flex items-center px-4">
+      <div className="bg-white shadow-lg rounded-2xl p-6 sm:w-screen max-w-2xl">
+        <h1 className="text-3xl font-bold mb-4 text-center">Interest Calculator</h1>
         <div className="mb-4">
           <label className="block mb-1 font-semibold">Amount in Lakh (Enter 1 for 100,000 MMK)</label>
           <input
